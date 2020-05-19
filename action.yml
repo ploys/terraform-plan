@@ -7,6 +7,10 @@ inputs:
   plan:
     description: The path to the generated plan
     required: false
+  preview:
+    description: Generate the markdown preview
+    required: false
+    default: 'true'
 outputs:
   plan:
     description: The path to the generated plan

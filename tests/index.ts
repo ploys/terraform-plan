@@ -20,6 +20,8 @@ describe('Terraform Plan', () => {
     process.env.GITHUB_REPOSITORY = 'ploys/tests'
     process.env.GITHUB_SHA = sha
     process.env.GITHUB_WORKFLOW = 'cd'
+
+    process.env.INPUT_PREVIEW = 'true'
   })
 
   beforeEach(() => {
