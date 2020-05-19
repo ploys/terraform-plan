@@ -5,19 +5,22 @@ import * as exec from '@actions/exec'
 
 async function run(): Promise<void> {
   try {
-    const dir = process.env.GITHUB_WORKSPACE as string
-    const cwd = path.resolve(dir, core.getInput('path'))
-    const out = path.resolve(cwd, core.getInput('plan') || 'terraform-plan.tfplan')
+    const cwd = process.env.GITHUB_WORKSPACE as string
 
-    await exec.exec('terraform', ['plan', '-input=false', `-out=${out}`], { cwd })
+    const dir = path.resolve(cwd, core.getInput('dir'))
+    const out = path.resolve(dir, core.getInput('out') || 'tfplan')
 
-    core.setOutput('plan', path.resolve(out))
+    await exec.exec('terraform', ['plan', '-input=false', `-out=${out}`], {
+      cwd: dir,
+    })
+
+    core.setOutput('out', out)
 
     if (core.getInput('preview') === 'true') {
       let preview = ''
 
       await exec.exec('terraform', ['show', '-no-color', out], {
-        cwd,
+        cwd: dir,
         listeners: {
           stdout: (data: Buffer) => {
             preview += data.toString()

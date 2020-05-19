@@ -1,18 +1,20 @@
 name: Terraform Plan
 description: Create a Terraform plan
 inputs:
-  path:
-    description: The path to the module directory
+  dir:
+    description: The source directory
     required: false
-  plan:
-    description: The path to the generated plan
+  out:
+    description: The output file path of the generated plan
     required: false
   preview:
-    description: Generate the markdown preview
+    description: Generate a markdown preview
     required: false
 outputs:
-  plan:
-    description: The path to the generated plan
+  dir:
+    description: The source directory
+  out:
+    description: The output file path of the generated plan
   preview:
     description: The markdown preview of the plan
 runs:
