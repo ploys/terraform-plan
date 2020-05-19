@@ -1,0 +1,15 @@
+name: Terraform Plan
+description: Create a Terraform plan
+inputs:
+  path:
+    description: The path to the module directory
+    required: false
+  plan:
+    description: The path to the generated plan
+    required: false
+outputs:
+  plan:
+    description: The path to the generated plan
+runs:
+  using: node12
+  main: dist/index.js
