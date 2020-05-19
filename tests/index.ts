@@ -33,7 +33,7 @@ describe('Terraform Plan', () => {
 
     const tfSrcFile = path.join(__dirname, 'fixtures/terraform.tf')
     const tfDstFile = path.join(cwd, 'terraform.tf')
-    const planFile = path.join(cwd, 'terraform-plan.tfplan')
+    const planFile = path.join(cwd, 'tfplan')
 
     process.env.GITHUB_WORKSPACE = cwd
 
@@ -60,8 +60,8 @@ describe('Terraform Plan', () => {
     const planFile = path.join(cwd, 'plan.txt')
 
     process.env.GITHUB_WORKSPACE = cwd
-    process.env.INPUT_PATH = '.'
-    process.env.INPUT_PLAN = 'plan.txt'
+    process.env.INPUT_DIR = '.'
+    process.env.INPUT_OUT = 'plan.txt'
 
     try {
       await fs.promises.copyFile(tfSrcFile, tfDstFile)
@@ -86,8 +86,8 @@ describe('Terraform Plan', () => {
     const planFile = path.join(cwd, 'plan.txt')
 
     process.env.GITHUB_WORKSPACE = cwd
-    process.env.INPUT_PATH = cwd
-    process.env.INPUT_PLAN = planFile
+    process.env.INPUT_DIR = cwd
+    process.env.INPUT_OUT = planFile
 
     try {
       await fs.promises.copyFile(tfSrcFile, tfDstFile)
