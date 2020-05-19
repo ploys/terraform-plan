@@ -12,6 +12,21 @@ async function run(): Promise<void> {
     await exec.exec('terraform', ['plan', '-input=false', `-out=${out}`], { cwd })
 
     core.setOutput('plan', path.resolve(out))
+
+    if (core.getInput('preview') === 'true') {
+      let preview = ''
+
+      await exec.exec('terraform', ['show', '-no-color', out], {
+        cwd,
+        listeners: {
+          stdout: (data: Buffer) => {
+            preview += data.toString()
+          },
+        },
+      })
+
+      core.setOutput('preview', `# Plan\n\n\`\`\`\n${preview.trim()}\n\`\`\``)
+    }
   } catch (error) {
     core.error(error)
     core.setFailed(error.message)

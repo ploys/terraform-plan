@@ -7,9 +7,14 @@ inputs:
   plan:
     description: The path to the generated plan
     required: false
+  preview:
+    description: Generate the markdown preview
+    required: false
 outputs:
   plan:
     description: The path to the generated plan
+  preview:
+    description: The markdown preview of the plan
 runs:
   using: node12
   main: dist/index.js
