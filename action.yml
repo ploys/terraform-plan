@@ -10,6 +10,8 @@ inputs:
 outputs:
   plan:
     description: The path to the generated plan
+  preview:
+    description: The markdown preview of the plan
 runs:
   using: node12
   main: dist/index.js
