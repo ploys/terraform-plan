@@ -3,6 +3,8 @@ import * as path from 'path'
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
+import AnsiUp from 'ansi_up'
+
 async function run(): Promise<void> {
   try {
     const cwd = process.env.GITHUB_WORKSPACE as string
@@ -16,19 +18,33 @@ async function run(): Promise<void> {
 
     core.setOutput('out', out)
 
-    if (core.getInput('preview') === 'true') {
-      let preview = ''
+    const preview = core.getInput('preview')
 
-      await exec.exec('terraform', ['show', '-no-color', out], {
+    if (preview && preview !== 'off') {
+      const args = preview === 'color' ? ['show', out] : ['show', '-no-color', out]
+
+      let markup = ''
+
+      await exec.exec('terraform', args, {
         cwd: dir,
         listeners: {
           stdout: (data: Buffer) => {
-            preview += data.toString()
+            markup += data.toString()
           },
         },
       })
 
-      core.setOutput('preview', `# Plan\n\n\`\`\`\n${preview.trim()}\n\`\`\``)
+      markup = markup.trim()
+
+      if (preview === 'color') {
+        const ansi = new AnsiUp()
+
+        markup = ansi.ansi_to_html(markup)
+      }
+
+      markup = `# Plan\n\n<pre>\n${markup}\n</pre>`
+
+      core.setOutput('preview', markup)
     }
   } catch (error) {
     core.error(error)
