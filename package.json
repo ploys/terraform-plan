@@ -1,0 +1,46 @@
+{
+  "name": "@ploys/terraform-plan",
+  "description": "Create a Terraform plan",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Daniel Balcomb <daniel.balcomb@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/ploys/terraform-plan.git",
+  "homepage": "https://github.com/ploys/terraform-plan",
+  "bugs": "https://github.com/ploys/terraform-plan/issues",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w --preserveWatchOutput",
+    "build:dist": "ncc build src/index.ts -o dist -m",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "test": "jest",
+    "test:watch": "jest --watch --notify --notifyMode=change"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/exec": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.5",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "@zeit/ncc": "^0.22.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-github": "^3.4.1",
+    "eslint-plugin-jest": "^23.9.0",
+    "jest": "^25.5.4",
+    "prettier": "^2.0.5",
+    "tmp-promise": "^3.0.2",
+    "ts-jest": "^25.5.0",
+    "typescript": "^3.8.3"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
