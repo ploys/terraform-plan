@@ -124,6 +124,8 @@ describe('Terraform Plan', () => {
     const secret = 'password'
 
     process.env.GITHUB_WORKSPACE = cwd
+    process.env.INPUT_DIR = cwd
+    process.env.INPUT_OUT = planFile
     process.env.INPUT_ENCRYPT = 'on'
     process.env.SECRET = secret
 
