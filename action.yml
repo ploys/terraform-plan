@@ -7,6 +7,9 @@ inputs:
   out:
     description: The output file path of the generated plan
     required: false
+  encrypt:
+    description: Encrypt the generated plan
+    required: false
   preview:
     description: Generate a markdown preview
     required: false

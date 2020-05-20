@@ -8,6 +8,17 @@ import * as tmp from 'tmp-promise'
 
 const exec = util.promisify(child.exec)
 
+function decrypt(input: Buffer, secret: string): string {
+  const key = Buffer.alloc(32, secret, 'utf-8')
+  const [head, tail] = input.toString().split(':', 2)
+  const iv = Buffer.from(head, 'hex')
+  const encrypted = Buffer.from(tail, 'hex')
+  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
+  const decrypted = decipher.update(encrypted)
+
+  return Buffer.concat([decrypted, decipher.final()]).toString()
+}
+
 describe('Terraform Plan', () => {
   const sha = crypto.createHash('sha1').digest('hex')
 
@@ -95,6 +106,35 @@ describe('Terraform Plan', () => {
       await import('../src')
       await new Promise(resolve => setTimeout(resolve, 5000))
       expect(fs.existsSync(planFile)).toBe(true)
+      await cleanup()
+    } catch (err) {
+      await cleanup()
+      throw err
+    }
+
+    done()
+  }, 20000)
+
+  test('creates a terraform plan with encryption', async done => {
+    const { path: cwd, cleanup } = await tmp.dir({ unsafeCleanup: true })
+
+    const tfSrcFile = path.join(__dirname, 'fixtures/terraform.tf')
+    const tfDstFile = path.join(cwd, 'terraform.tf')
+    const planFile = path.join(cwd, 'tfplan')
+    const secret = 'password'
+
+    process.env.GITHUB_WORKSPACE = cwd
+    process.env.INPUT_ENCRYPT = 'on'
+    process.env.SECRET = secret
+
+    try {
+      await fs.promises.copyFile(tfSrcFile, tfDstFile)
+      await exec('terraform init', { cwd })
+      await import('../src')
+      await new Promise(resolve => setTimeout(resolve, 5000))
+      expect(fs.existsSync(planFile)).toBe(true)
+      const file = await fs.promises.readFile(planFile)
+      decrypt(file, secret)
       await cleanup()
     } catch (err) {
       await cleanup()
