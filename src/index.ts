@@ -1,3 +1,5 @@
+import * as crypto from 'crypto'
+import * as fs from 'fs'
 import * as path from 'path'
 
 import * as core from '@actions/core'
@@ -45,6 +47,25 @@ async function run(): Promise<void> {
       markup = `# Plan\n\n<pre>\n${markup}\n</pre>`
 
       core.setOutput('preview', markup)
+    }
+
+    const encrypt = core.getInput('encrypt')
+
+    if (encrypt && (encrypt === 'true' || encrypt === 'on')) {
+      const secret = process.env.SECRET
+
+      if (secret) {
+        const key = Buffer.alloc(32, secret, 'utf-8')
+        const iv = crypto.randomBytes(16)
+        const buffer = await fs.promises.readFile(out)
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+        const result = Buffer.concat([cipher.update(buffer), cipher.final()])
+        const output = `${iv.toString('hex')}:${result.toString('hex')}`
+
+        await fs.promises.writeFile(out, output)
+      } else {
+        throw new Error("Expected environment variable 'SECRET' with utf-8 encoding")
+      }
     }
   } catch (error) {
     core.error(error)
