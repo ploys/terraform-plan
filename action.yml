@@ -14,6 +14,9 @@ inputs:
     description: Generate a markdown preview
     required: false
     default: 'off'
+  artifact:
+    description: Upload the plan as an artifact
+    required: false
 outputs:
   dir:
     description: The source directory
@@ -21,6 +24,8 @@ outputs:
     description: The output file path of the generated plan
   preview:
     description: The markdown preview of the plan
+  artifact:
+    description: The name of the uploaded artifact
 runs:
   using: node12
   main: dist/index.js

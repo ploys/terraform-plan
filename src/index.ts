@@ -2,6 +2,7 @@ import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
 
+import * as artifact from '@actions/artifact'
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
@@ -66,6 +67,16 @@ async function run(): Promise<void> {
       } else {
         throw new Error("Expected environment variable 'SECRET' with utf-8 encoding")
       }
+    }
+
+    const art = core.getInput('artifact')
+
+    if (art && (art === 'true' || art === 'on')) {
+      const client = artifact.create()
+      const root = path.dirname(out)
+      const res = await client.uploadArtifact('tfplan', [out], root)
+
+      core.setOutput('artifact', res.artifactName)
     }
   } catch (error) {
     core.error(error)
